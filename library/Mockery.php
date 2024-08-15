@@ -241,6 +241,22 @@ class Mockery
     }
 
     /**
+     * Utility method to format a count using its singular or plural form.
+     *
+     * @param string $method
+     *
+     * @return string
+     */
+    public static function formatCount(int $count, string $singular, string $plural): string
+    {
+        if ($count === 1) {
+            return $count . ' ' .  $singular;
+        }
+
+        return $count . ' ' .  $plural;
+    }
+
+    /**
      * Utility method to format method name and arguments into a string.
      *
      * @param string $method

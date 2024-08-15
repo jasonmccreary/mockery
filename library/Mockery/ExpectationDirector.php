@@ -87,15 +87,7 @@ class ExpectationDirector
             return $expectation->verifyCall($args);
         }
 
-        $exception = new NoMatchingExpectationException(
-            'No matching handler found for '
-            . $this->_mock->mockery_getName() . '::'
-            . Mockery::formatArgs($this->_name, $args)
-            . '. Either the method was unexpected or its arguments matched'
-            . ' no expected argument list for this method'
-            . PHP_EOL . PHP_EOL
-            . Mockery::formatObjects($args)
-        );
+        $exception = $this->determineException($args);
 
         $exception->setMock($this->_mock)
             ->setMethodName($this->_name)
@@ -238,5 +230,38 @@ class ExpectationDirector
         }
 
         return null;
+    }
+
+    /**
+     * Determine the exception to throw
+     *
+     * @param array<mixed> $args
+     *
+     * @return \Throwable
+     */
+    protected function determineException(array $args)
+    {
+        if (count($this->_expectations) === 1) {
+            return new NoMatchingExpectationException(
+                'Mockery received a call to '
+                . $this->_mock->mockery_getName() . '::'
+                . Mockery::formatArgs($this->_name, $args)
+                . ' which it did not expect.'
+                . ' Mockery expected a call to '
+                . $this->_mock->mockery_getName() . '::'
+                . $this->_expectations[0]->__toString()
+                . PHP_EOL . PHP_EOL
+                . Mockery::formatObjects($args)
+            );
+        }
+
+        return new NoMatchingExpectationException(
+            'Mockery received a call to '
+            . $this->_mock->mockery_getName() . '::'
+            . Mockery::formatArgs($this->_name, $args)
+            . ' which it did not expect.'
+            . PHP_EOL . PHP_EOL
+            . Mockery::formatObjects($args)
+        );;
     }
 }

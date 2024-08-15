@@ -963,8 +963,8 @@ class Mock implements MockInterface
             return $this->_mockery_defaultReturnValue;
         }
 
-        $message = 'Method ' . self::class . '::' . $method .
-            '() does not exist on this mock object';
+        $message = self::class . ' received a call to ' . $method .
+            '() which it did not expect. Did you mean to set an expectation for this method call?';
 
         if (!is_null($rm)) {
             $message = 'Received ' . self::class .

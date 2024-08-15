@@ -10,6 +10,7 @@
 
 namespace Mockery\CountValidator;
 
+use Mockery;
 use Mockery\Exception\InvalidCountException;
 
 use const PHP_EOL;
@@ -28,11 +29,11 @@ class AtMost extends CountValidatorAbstract
     {
         if ($this->_limit < $n) {
             $exception = new InvalidCountException(
-                'Method ' . (string) $this->_expectation
-                . ' from ' . $this->_expectation->getMock()->mockery_getName()
-                . ' should be called' . PHP_EOL
-                . ' at most ' . $this->_limit . ' times but called ' . $n
-                . ' times.'
+                'Mockery expected ' . $this->_expectation->getMock()->mockery_getName()
+                . '::' . (string)$this->_expectation
+                . ' to be called at most '
+                . Mockery::formatCount($this->_limit, 'time', 'times'). ', but it was called '
+                . Mockery::formatCount($n, 'time', 'times') . '.'
             );
             $exception->setMock($this->_expectation->getMock())
                 ->setMethodName((string) $this->_expectation)
